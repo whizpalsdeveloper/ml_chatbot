@@ -1,3 +1,6 @@
 scikit-learn
 nltk
 flask
+flask_sqlalchemy
+flask_login
+werkzeug

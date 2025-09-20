@@ -13,3 +13,4 @@ class ChatMessage(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     sender = db.Column(db.String(10))  # "user" or "bot"
     message = db.Column(db.Text)
+

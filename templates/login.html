@@ -1,6 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+</head>
+<body>
+<h2>Login</h2>
 <form method="POST">
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
+    Username: <input type="text" name="username" required><br><br>
+    Password: <input type="password" name="password" required><br><br>
     <button type="submit">Login</button>
-  </form>
-  
+</form>
+<p>New user? <a href="{{ url_for('register') }}">Register here</a></p>
+</body>
+</html>
