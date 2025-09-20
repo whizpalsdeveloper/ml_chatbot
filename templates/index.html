@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Chatbot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body { font-family: Arial, sans-serif; background:#f0f0f0; }
+    .chat-container { width: 400px; margin: 50px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.2);}
+    #chat-box { height:300px; overflow-y:auto; border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:5px; background:#fafafa;}
+    .user { color:#1a73e8; margin-bottom:5px; }
+    .bot { color:#333; margin-bottom:5px; }
+    .input-area { display:flex; gap:10px; }
+    input { flex:1; padding:10px; border-radius:5px; border:1px solid #ccc; }
+    button { padding:10px 20px; border:none; background:#1a73e8; color:#fff; border-radius:5px; cursor:pointer; }
+    button:hover { background:#155ab6; }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h2>AI Chatbot 🤖</h2>
+    <button onclick="window.location.href='{{ url_for('logout') }}'" 
+        style="background:rgb(231, 75, 75); color:white; padding:5px 10px; border:none; border-radius:5px; cursor:pointer; margin-bottom: 10px;">
+        Logout
+    </button>
+
+    <div id="chat-box"></div>
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Type your message..." onkeypress="if(event.key==='Enter'){sendMessage()}">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    async function loadChatHistory() {
+      const response = await fetch("/get_history");
+      const data = await response.json();
+      updateChatHistory(data.history);
+    }
+
+    async function sendMessage() {
+      const inputField = document.getElementById("user-input");
+      const message = inputField.value.trim();
+      if (!message) return;
+
+      inputField.value = "";
+
+      const response = await fetch("/get", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message })
+      });
+
+      const data = await response.json();
+      updateChatHistory(data.history);
+    }
+
+    function updateChatHistory(history) {
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML = "";  // clear before re-render
+
+      history.forEach(entry => {
+        if (entry.user) chatBox.innerHTML += `<div class="user">You: ${entry.user}</div>`;
+        if (entry.bot) chatBox.innerHTML += `<div class="bot">Bot: ${entry.bot}</div>`;
+      });
+
+      chatBox.scrollTop = chatBox.scrollHeight; // auto-scroll
+    }
+
+    // Load chat history when page loads
+    window.onload = loadChatHistory;
+  </script>
+</body>
+</html>
